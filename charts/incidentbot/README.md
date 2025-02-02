@@ -2,7 +2,7 @@
 
 A Helm chart for deploying Incident Bot to Kubernetes.
 
-https://docs.incidentbot.io/installation/#helm
+For additional information, check out the [documentation](https://docs.incidentbot.io/installation/#helm).
 
 ## Configuration
 
