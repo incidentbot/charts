@@ -16,10 +16,11 @@ spec:
       {{- include "incident-bot.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/environment: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         {{- include "incident-bot.selectorLabels" . | nindent 8 }}
         {{- if .Values.extraPodLabels }}
