@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   helm:
     docker:
-      - image: eb129/docker-kubectl:v1.2.0
+      - image: eb129/docker-kubectl:3
     steps:
       - checkout
       - run: scripts/helm.sh
