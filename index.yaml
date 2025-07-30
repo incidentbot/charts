@@ -40,4 +40,18 @@ entries:
     urls:
     - https://github.com/incidentbot/charts/releases/download/incidentbot-2.1.2/incidentbot-2.1.2.tgz
     version: 2.1.2
-generated: "2025-04-10T00:45:05.344793798Z"
+  incidentbot-console:
+  - apiVersion: v2
+    appVersion: 0.1.4
+    created: "2025-07-30T03:58:16.923407452Z"
+    description: A Helm chart for deploying Incident Bot Console to Kubernetes
+    digest: a394650d7b213d86de6c9c22331e6cc80646f2bd156a8bb63fb15202d615ebea
+    maintainers:
+    - email: scott@echoboomer.net
+      name: Scott Hawkins
+    name: incidentbot-console
+    type: application
+    urls:
+    - https://github.com/incidentbot/charts/releases/download/incidentbot-console-0.1.4/incidentbot-console-0.1.4.tgz
+    version: 0.1.4
+generated: "2025-07-30T03:58:16.923418784Z"
