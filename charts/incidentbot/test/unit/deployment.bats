@@ -264,6 +264,36 @@ load _helpers
     [ "${actual}" = "myVarValue" ]
 }
 
+@test "deployment: wait-for-db envVars render" {
+    cd $(chart_dir)
+    local object=$(helm template \
+        --show-only templates/deployment.yaml \
+        --set 'envVars.MYVAR=myVarValue' \
+        . | tee /dev/stderr |
+        yq -r '.spec.template.spec.initContainers[0].env[0]' | tee /dev/stderr)
+
+    local actual=$(echo "$object" | yq '.name' | tee /dev/stderr)
+    [ "${actual}" = "MYVAR" ]
+
+    local actual=$(echo "$object" | yq '.value' | tee /dev/stderr)
+    [ "${actual}" = "myVarValue" ]
+}
+
+@test "deployment: db-migrations envVars render" {
+    cd $(chart_dir)
+    local object=$(helm template \
+        --show-only templates/deployment.yaml \
+        --set 'envVars.MYVAR=myVarValue' \
+        . | tee /dev/stderr |
+        yq -r '.spec.template.spec.initContainers[1].env[0]' | tee /dev/stderr)
+
+    local actual=$(echo "$object" | yq '.name' | tee /dev/stderr)
+    [ "${actual}" = "MYVAR" ]
+
+    local actual=$(echo "$object" | yq '.value' | tee /dev/stderr)
+    [ "${actual}" = "myVarValue" ]
+}
+
 @test "deployment: config file path is added if create set to true" {
     cd $(chart_dir)
     local object=$(helm template \
