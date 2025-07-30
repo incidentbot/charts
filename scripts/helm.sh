@@ -6,7 +6,7 @@ cNone='\033[00m'
 cGreen='\033[01;32m'
 
 # Directory for chart source.
-cd deploy/charts
+cd charts
 
 # Lint all charts and add dependencies if there are any.
 if [ "$CIRCLE_BRANCH" != "main" ]; then
