@@ -38,6 +38,10 @@ spec:
         - name: wait-for-db
           image: busybox:latest
           command: ['sh', '-c', 'echo -e "Waiting for database $POSTGRES_HOST $POSTGRES_PORT"; while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do sleep 1; printf "-"; done; echo -e "  >> Database is reachable";']
+          {{- if .Values.envVars }}
+          env:
+          {{- include "incident-bot.envVars.rendered" (list . .Values) | indent 12 }}
+          {{- end }}
           {{- if and .Values.envFromSecret.enabled (not (empty .Values.envFromSecret.secretName)) }}
           envFrom:
             - secretRef:
@@ -53,6 +57,10 @@ spec:
           {{- with .Values.init.command }}
           command:
             {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.envVars }}
+          env:
+          {{- include "incident-bot.envVars.rendered" (list . .Values) | indent 12 }}
           {{- end }}
           {{- if and .Values.envFromSecret.enabled (not (empty .Values.envFromSecret.secretName)) }}
           envFrom:
