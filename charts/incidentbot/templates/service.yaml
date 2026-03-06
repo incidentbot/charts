@@ -1,3 +1,6 @@
+{{- $appMode := default "bot" .Values.appMode }}
+{{- $apiEnabled := or (eq $appMode "api") (eq $appMode "all") }}
+{{- if and .Values.service.enabled $apiEnabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -14,3 +17,4 @@ spec:
       name: http
   selector:
     {{- include "incident-bot.selectorLabels" . | nindent 4 }}
+{{- end }}

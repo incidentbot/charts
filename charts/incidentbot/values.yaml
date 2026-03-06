@@ -4,8 +4,12 @@
 
 affinity: {}
 
+# Runtime mode for the main container: bot, api, or all.
+appMode: bot
+
 args: []
 
+# Optional explicit command override. If empty, command is derived from appMode.
 command: []
 
 configMap:
@@ -58,8 +62,8 @@ ingress:
 
 init:
   enabled: true
-  command: ['/bin/sh']
-  args: ['-c', 'alembic upgrade head']
+  command: ['incidentbot-migrate']
+  args: []
   image:
     tag:
 
@@ -80,6 +84,7 @@ resources:
 securityContext: {}
 
 service:
+  enabled: false
   type: ClusterIP
   port: 3000
 
