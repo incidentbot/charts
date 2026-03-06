@@ -50,6 +50,15 @@ load _helpers
     [ "${actual}" = "override" ]
 }
 
+@test "deployment: default command runs bot mode" {
+    cd $(chart_dir)
+    local actual=$(helm template \
+        --show-only templates/deployment.yaml \
+        . | tee /dev/stderr |
+        yq -r '.spec.template.spec.containers[0].command[0]' | tee /dev/stderr)
+    [ "${actual}" = "incidentbot-bot" ]
+}
+
 @test "deployment: extraContainers" {
     cd $(chart_dir)
     local object=$(helm template \
@@ -144,60 +153,70 @@ load _helpers
     cd $(chart_dir)
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].livenessProbe.initialDelaySeconds' | tee /dev/stderr)
     [ "${actual}" = "10" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].livenessProbe.periodSeconds' | tee /dev/stderr)
     [ "${actual}" = "30" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].livenessProbe.timeoutSeconds' | tee /dev/stderr)
     [ "${actual}" = "1" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].livenessProbe.httpGet.path' | tee /dev/stderr)
     [ "${actual}" = "/api/v1/health" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].livenessProbe.httpGet.port' | tee /dev/stderr)
     [ "${actual}" = "3000" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].readinessProbe.initialDelaySeconds' | tee /dev/stderr)
     [ "${actual}" = "10" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].readinessProbe.periodSeconds' | tee /dev/stderr)
     [ "${actual}" = "30" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].readinessProbe.timeoutSeconds' | tee /dev/stderr)
     [ "${actual}" = "1" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].readinessProbe.httpGet.path' | tee /dev/stderr)
     [ "${actual}" = "/api/v1/health" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
+        --set 'appMode=api' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].readinessProbe.httpGet.port' | tee /dev/stderr)
     [ "${actual}" = "3000" ]
@@ -213,7 +232,17 @@ load _helpers
         --set 'image.tag=1234' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].image' | tee /dev/stderr)
-    [ "${actual}" = "eb129/incidentbot:v1234" ]
+    [ "${actual}" = "eb129/incidentbot:1234" ]
+}
+
+@test "deployment: string image tag is used as-is" {
+    cd $(chart_dir)
+    local actual=$(helm template \
+        --show-only templates/deployment.yaml \
+        --set 'image.tag=development' \
+        . | tee /dev/stderr |
+        yq -r '.spec.template.spec.containers[0].image' | tee /dev/stderr)
+    [ "${actual}" = "eb129/incidentbot:development" ]
 }
 
 @test "deployment: override init image tag" {
@@ -223,7 +252,7 @@ load _helpers
         --set 'init.image.tag=1234' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.initContainers[1].image' | tee /dev/stderr)
-    [ "${actual}" = "eb129/incidentbot:util-v1234" ]
+    [ "${actual}" = "eb129/incidentbot:1234" ]
 }
 
 @test "deployment: image suffix" {
@@ -233,17 +262,17 @@ load _helpers
         --set 'image.suffix=arm64' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].image' | tee /dev/stderr)
-    [ "${actual}" = "eb129/incidentbot:v$(chart_version)-arm64" ]
+    [ "${actual}" = "eb129/incidentbot:$(chart_version)-arm64" ]
 }
 
-@test "deployment: util image suffix" {
+@test "deployment: init image suffix" {
     cd $(chart_dir)
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
         --set 'image.suffix=arm64' \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.initContainers[1].image' | tee /dev/stderr)
-    [ "${actual}" = "eb129/incidentbot:util-v$(chart_version)-arm64" ]
+    [ "${actual}" = "eb129/incidentbot:$(chart_version)-arm64" ]
 }
 
 #--------------------------------------------------------------------

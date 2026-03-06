@@ -1,4 +1,6 @@
 ---
+{{- $appMode := default "bot" .Values.appMode }}
+{{- $apiEnabled := or (eq $appMode "api") (eq $appMode "all") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,7 +46,7 @@ spec:
                 name: {{ .Values.envFromSecret.secretName }}
           {{- end }}
         - name: db-migrations
-          image: {{ include "incident-bot.util-image.rendered" . }}
+          image: {{ include "incident-bot.init-image.rendered" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- with .Values.init.args }}
           args:
@@ -70,14 +72,25 @@ spec:
           args:
             {{- . | toYaml | nindent 12 }}
           {{- end }}
-          {{- with .Values.command }}
+          {{- if .Values.command }}
           command:
-            {{- . | toYaml | nindent 12 }}
+            {{- .Values.command | toYaml | nindent 12 }}
+          {{- else }}
+          command:
+            {{- if eq $appMode "api" }}
+            - incidentbot-api
+            {{- else if eq $appMode "all" }}
+            - incidentbot-all
+            {{- else }}
+            - incidentbot-bot
+            {{- end }}
           {{- end }}
+          {{- if $apiEnabled }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          {{- end }}
           {{- if (or (.Values.envVars) (.Values.configMap.create) ) }}
           env:
             {{- if .Values.configMap.create }}
@@ -91,7 +104,7 @@ spec:
             - secretRef:
                 name: {{ .Values.envFromSecret.secretName }}
           {{- end }}
-          {{- if .Values.healthCheck.enabled }}
+          {{- if and $apiEnabled .Values.healthCheck.enabled }}
           {{- with .Values.healthCheck }}
           livenessProbe:
             httpGet:
