@@ -42,10 +42,10 @@ healthCheck:
   timeoutSeconds: 1
 
 image:
-  repository: eb129/incidentbot
+  repository: ghcr.io/incidentbot/incidentbot
   pullPolicy: Always
-  suffix:
-  tag:
+  # CalVer format: YYYY.MM.DD (e.g. 2026.06.01) or sha-<short>
+  tag: latest
 
 imagePullSecrets: []
 
@@ -65,6 +65,7 @@ init:
   command: ['incidentbot-migrate']
   args: []
   image:
+    # Defaults to image.tag if not set
     tag:
 
 nodeSelector: {}

@@ -86,12 +86,12 @@ Rendered environment variables
 Rendered base image
 */}}
 {{- define "incident-bot.image.rendered" -}}
-"{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ if .Values.image.suffix }}-{{ .Values.image.suffix}}{{ end }}"
+"{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
 {{- end }}
 
 {{/*
 Rendered init image
 */}}
 {{- define "incident-bot.init-image.rendered" -}}
-"{{ .Values.image.repository }}:{{ .Values.init.image.tag | default .Chart.AppVersion }}{{ if .Values.image.suffix }}-{{ .Values.image.suffix}}{{ end }}"
+"{{ .Values.image.repository }}:{{ .Values.init.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
 {{- end }}
