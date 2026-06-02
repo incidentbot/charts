@@ -164,7 +164,7 @@ load _helpers
         --show-only templates/deployment.yaml \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].livenessProbe.httpGet.path' | tee /dev/stderr)
-    [ "${actual}" = "/api/v1/health" ]
+    [ "${actual}" = "/health" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \
@@ -194,7 +194,7 @@ load _helpers
         --show-only templates/deployment.yaml \
         . | tee /dev/stderr |
         yq -r '.spec.template.spec.containers[0].readinessProbe.httpGet.path' | tee /dev/stderr)
-    [ "${actual}" = "/api/v1/health" ]
+    [ "${actual}" = "/health" ]
 
     local actual=$(helm template \
         --show-only templates/deployment.yaml \

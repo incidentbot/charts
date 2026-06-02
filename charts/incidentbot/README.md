@@ -24,7 +24,7 @@ For additional information, check out the [documentation](https://docs.incidentb
 | `extraContainers`                 | A list of raw `yaml` specifying any additional containers to create alongside the main one.                        | `[]`                      |
 | `extraPodLabels`                  | A list of raw `yaml` specifying any additional labels to add to the `pod`.                                         | `{}`                      |
 | `healthCheck.enabled`             | Whether or not to enable the health check for the main process container (applies to `api`/`all` modes).           | `true`                    |
-| `healthCheck.path`                | The path to use for the health check.                                                                              | `/api/v1/health`          |
+| `healthCheck.path`                | The path to use for the health check.                                                                              | `/health`          |
 | `healthCheck.scheme`              | The health check scheme.                                                                                           | `HTTP`                    |
 | `healthCheck.initialDelaySeconds` |                                                                                                                    | `10`                      |
 | `healthCheck.periodSeconds`       |                                                                                                                    | `30`                      |

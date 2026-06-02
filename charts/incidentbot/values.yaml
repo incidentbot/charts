@@ -32,7 +32,7 @@ extraPodLabels: {}
 
 healthCheck:
   enabled: true
-  path: /api/v1/health
+  path: /health
   scheme: HTTP
   initialDelaySeconds: 10
   periodSeconds: 30
