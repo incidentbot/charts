@@ -3,6 +3,19 @@ entries:
   incidentbot:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-06-02T15:19:53.707478732Z"
+    description: The Open Source Incident Management Framework
+    digest: 182b57ff6f3bc82cd7caffa41e78291cba1bd7a12d462d3df03ed1a26b29bafb
+    maintainers:
+    - email: scott@echoboomer.net
+      name: Scott Hawkins
+    name: incidentbot
+    type: application
+    urls:
+    - https://github.com/incidentbot/charts/releases/download/incidentbot-3.0.3/incidentbot-3.0.3.tgz
+    version: 3.0.3
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-06-02T13:55:39.380506639Z"
     description: The Open Source Incident Management Framework
     digest: dc016d63a85a1145f773b4e6d132c8f584aac6867ef21c64103dfa88f7f343c3
@@ -145,4 +158,4 @@ entries:
     urls:
     - https://github.com/incidentbot/charts/releases/download/incidentbot-console-0.1.4/incidentbot-console-0.1.4.tgz
     version: 0.1.4
-generated: "2026-06-02T13:55:39.380546132Z"
+generated: "2026-06-02T15:19:53.707527643Z"
