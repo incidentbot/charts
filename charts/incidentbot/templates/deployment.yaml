@@ -1,6 +1,4 @@
 ---
-{{- $appMode := default "bot" .Values.appMode }}
-{{- $apiEnabled := or (eq $appMode "api") (eq $appMode "all") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,33 +33,6 @@ spec:
       serviceAccountName: {{ include "incident-bot.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.init.enabled }}
-      initContainers:
-        - name: wait-for-db
-          image: busybox:latest
-          command: ['sh', '-c', 'echo -e "Waiting for database $POSTGRES_HOST $POSTGRES_PORT"; while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do sleep 1; printf "-"; done; echo -e "  >> Database is reachable";']
-          {{- if and .Values.envFromSecret.enabled (not (empty .Values.envFromSecret.secretName)) }}
-          envFrom:
-            - secretRef:
-                name: {{ .Values.envFromSecret.secretName }}
-          {{- end }}
-        - name: db-migrations
-          image: {{ include "incident-bot.init-image.rendered" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.init.args }}
-          args:
-            {{- . | toYaml | nindent 12 }}
-          {{- end }}
-          {{- with .Values.init.command }}
-          command:
-            {{- . | toYaml | nindent 12 }}
-          {{- end }}
-          {{- if and .Values.envFromSecret.enabled (not (empty .Values.envFromSecret.secretName)) }}
-          envFrom:
-            - secretRef:
-                name: {{ .Values.envFromSecret.secretName }}
-          {{- end }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -75,22 +46,11 @@ spec:
           {{- if .Values.command }}
           command:
             {{- .Values.command | toYaml | nindent 12 }}
-          {{- else }}
-          command:
-            {{- if eq $appMode "api" }}
-            - incidentbot-api
-            {{- else if eq $appMode "all" }}
-            - incidentbot-all
-            {{- else }}
-            - incidentbot-bot
-            {{- end }}
           {{- end }}
-          {{- if $apiEnabled }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- end }}
           {{- if (or (.Values.envVars) (.Values.configMap.create) ) }}
           env:
             {{- if .Values.configMap.create }}
@@ -104,7 +64,7 @@ spec:
             - secretRef:
                 name: {{ .Values.envFromSecret.secretName }}
           {{- end }}
-          {{- if and $apiEnabled .Values.healthCheck.enabled }}
+          {{- if .Values.healthCheck.enabled }}
           {{- with .Values.healthCheck }}
           livenessProbe:
             httpGet:

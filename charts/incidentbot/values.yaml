@@ -4,9 +4,6 @@
 
 affinity: {}
 
-# Runtime mode for the main container: bot, api, or all.
-appMode: bot
-
 args: []
 
 # Optional explicit command override. If empty, command is derived from appMode.
@@ -59,14 +56,6 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: []
-
-init:
-  enabled: true
-  command: ['incidentbot-migrate']
-  args: []
-  image:
-    # Defaults to image.tag if not set
-    tag:
 
 nodeSelector: {}
 
